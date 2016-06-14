@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+ <link rel="stylesheet" href="/shop/css/swiper-3.3.1.min.css">
+ <style type="text/css">  
+    .swiper-slide img{
+      width:1366px;
+      height:768px;
+    }
+ </style>
+<title>Insert title here</title>
+</head>
+<body>
+    <div class="swiper-container">
+    <div class="swiper-wrapper">
+    </div>
+   
+    
+    <!-- 如果需要导航按钮 -->
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-button-next"></div>
+    
+    
+    </div>
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/jquery/swiper-3.3.1.jquery.min.js"></script>
+<script type="text/javascript">      
+
+$(document).ready(function(){
+	var mySwiper = new Swiper ('.swiper-container', {
+		  direction: 'horizontal',
+		  loop: false,
+		 
+		  // 如果需要前进后退按钮
+		  nextButton: '.swiper-button-next',
+		  prevButton: '.swiper-button-prev',
+		  
+		  
+		}) 
+	var html='';
+	for(var i = 1;i < 11;i++){
+		html+='<div class="swiper-slide"><img src="/shop/image/web/'+i+'.png"></div>';
+	}
+	$(".swiper-wrapper").append(html);
+})
+</script>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" type="text/css" href="/shop/css/foot.css"></style>
+<link rel="stylesheet" type="text/css" href="/shop/css/my.css"/>
+<title>我的</title>
+</head>
+<body>
+    <header class="my-header">
+        <span>我的</span>
+        <img src="/shop/image/icon2.jpg">
+    </header>
+    <div class="person">
+    #if(!$userMap)
+        <span class="p-photo"><img src="/shop/image/user/person.png"></span>
+        <span class="p-info" onclick="location.href='/shop/common/toLogin'">未登录</span>
+    #else
+      #if(!$userMap.user_image)
+        <span class="p-photo"><img  src="/shop/image/user/person.png"></span>
+      #else
+        <span class="p-photo"><img  src="/shop/image/user/${userMap.user_image}"></span>
+      #end
+      <span class="p-info">${userMap.user_name}</span>
+    #end
+    </div>
+    <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+    <div class="function" ><span>我的发布</span></div>
+    <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+    <div class="function" ><span>我的收藏</span></div>
+    <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+    <div class="function"><span>我的积分</span></div>
+    <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+#parse("../html/common/menu.html")
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<title>聊天</title>
+</head>
+<link rel="stylesheet" type="text/css" href="/shop/css/talk.css">
+<link rel="stylesheet" type="text/css" href="/shop/css/header.css">
+<body>
+    <header class="my-header">
+        <div class="icon-back" onclick="location.href=history.back();"></div>
+        <span>${toName}</span>
+        <img src="/shop/image/icon2.jpg">
+    </header>
+    <div id="content"></div>
+    <input type="text" placeholder="请输入要发送的信息" id="msg" class="msg" onkeydown="send(event)">
+	<input type="button" value="发送" class="send" onclick="sendMsg()" >
+	<input type="button" value="清空" class="clear" onclick="clearAll()">
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/js/common.js"></script>
+<script>
+$(".my-header img").on("click",function(){
+	clearAll();
+	var to='${to}';
+	var html='';
+	$.ajax({
+		url : '/shop/chat/chatInfo',
+		type : 'post',
+		data : {"to":to},
+	    dataType : 'json',
+	    success : function(json){
+	    	for(var i = 0;i < json.length;i++){
+	    		var textCss=json[i].chat_to!=to?'fmsg_text':'tmsg_text';
+	    		var css=json[i].chat_to!=to?'fmsg':'tmsg';
+	    		 html+="<div class='"+css+"'><label class='name'>"+json[i].chat_from+"&nbsp;"+jsonDateFormat(json[i].chat_time)+"</label><div class='"+textCss+"'>"+json[i].chat_body+"</div></div>";
+	    	}
+	    	$("#content").append(html);
+	    }
+	})
+})
+var path="localhost:8080/shop";
+var to='${to}';
+var fromName='${userName}';
+var from='${userId}';
+if ('WebSocket' in window) {
+	websocket = new WebSocket("ws://" + path + "/ws?uid="+to);
+} else if ('MozWebSocket' in window) {
+	websocket = new MozWebSocket("ws://" + path + "/ws"+to);
+} else {
+	websocket = new SockJS("http://" + path + "/ws/sockjs"+to);
+}
+websocket.onopen = function(event) {
+	console.log("WebSocket:已连接");
+	console.log(event);
+};
+websocket.onmessage = function(event) {
+	console.log("msg");
+	var data=JSON.parse(event.data);
+	console.log("WebSocket:收到一条消息",data);
+	var textCss=data.from==-1?"sfmsg_text":"fmsg_text";
+	$("#content").append("<div class='fmsg'><label class='name'>"+data.fromName+"&nbsp;"+data.date+"</label><div class='"+textCss+"'>"+data.data+"</div></div>");
+	scrollToBottom();
+};
+websocket.onerror = function(event) {
+	console.log("WebSocket:发生错误 ");
+	console.log(event);
+};
+websocket.onclose = function(event) {
+	console.log("WebSocket:已关闭");
+	console.log(event);
+}
+function sendMsg(){
+	var v=$("#msg").val();
+	if(v==""){
+		return;
+	}else{
+		var data={};
+		var date=new Date().Format("yyyy-MM-dd hh:mm:ss");
+		data["type"]='text';
+		data["date"]=date;
+		data["from"]=from;
+		data["fromName"]=fromName;
+		data["to"]=to;
+		data["data"]=v;
+		console.log(data);
+		websocket.send(JSON.stringify(
+				data));
+		$("#content").append("<div class='tmsg'><label class='name'>我&nbsp;"+new Date().Format("yyyy-MM-dd hh:mm:ss")+"</label><div class='tmsg_text'>"+data.data+"</div></div>");
+		scrollToBottom();
+		$("#msg").val("");
+	}
+}
+
+function scrollToBottom(){
+	var div = document.getElementById('content');
+	div.scrollTop = div.scrollHeight;
+}
+
+Date.prototype.Format = function (fmt) { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+
+function send(event){
+	var code;
+	 if(window.event){
+		 code = window.event.keyCode; // IE
+	 }else{
+		 code = e.which; // Firefox
+	 }
+	if(code==13){ 
+		sendMsg();            
+	}
+}
+
+function clearAll(){
+	$("#content").empty();
+}
+</script>
+</html>

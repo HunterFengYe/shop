@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>注册</title>
+	<link rel="stylesheet" href="/shop/css/register.css">
+	<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+	<div id="register">
+		<header class="header">
+			<a class="header-back" href="javascript: history.go(-1);"><i class="icon-title-back"></i></a>
+			<h1>手机注册</h1>
+		</header>
+		<div class="btn" id="registerError"></div>
+		<div class="input-view active" id="telReg">
+			<div class="input-cell">
+				<div class="icon tel"></div>
+				<input id="tel" name="tel" type="tel" placeholder="请输入11位中国大陆手机号码" maxlength="11">
+				<i class="btn-close"></i>
+			</div>
+			<div class="input-cell">
+				<div class="icon password"></div>
+				<input id="telPwd" maxlength="16" name="password1" type="password" placeholder="请输入密码"> <i class="btn-close" style="display: none;"></i>
+				<div class="icon eye lookPassword"></div>
+			</div>
+			<div class="input-cell">
+				<div class="icon captcha"></div>
+				<input id="telIdentifyCode" name="identify" maxlength="4" type="text" placeholder="输入右侧验证码">
+				<img class="code-img" id="imgTelObj" src="/shop/validatecode" onclick="reflesh(this)">
+			</div>
+		</div>
+        <a class="btn yellow margin-top-50" id="registerAndLogin" onclick="register()">注册</a>
+	</div>
+	<div id="show-success" style="display:none">
+		<img style="width: 107px;" src="/shop/image/right.jpg" alt="恭喜你，注册成功">
+		<p>恭喜你，注册成功！</p>
+		<div class="daojishi"><span class="daojishi-time" id="daojishi-time">5</span>秒后自动跳转到首页</div>
+	</div>
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/js/common.js"></script>
+<script type="text/javascript">
+$(".lookPassword").click(function() {
+	var input = $(this).parent().find("input");
+	if (input.attr("type") == "password") {
+		input.attr("type", "text");
+	} else {
+		input.attr("type", "password");
+	}
+});
+    function register(){
+    	var phone=$("#tel").val();
+    	var pwd1=$("#telPwd").val();
+    	var code=$("#telIdentifyCode").val();
+    	if (new RegExp("^((13[0-9])|(15[0-9])|(18[0-9])|14[0-9]|17[0-9])[0-9]{8,8}$").test(phone) == false) {
+    		$("#errorText").text("请输入正确的手机");
+    		return false;
+	    }
+    	if (pwd1.length < 6 ){
+    		$("#errorText").text("请输入至少6位的密码");
+    		$("#telPwd").val("");
+    		return false;
+        }
+    	if (!/^([a-zA-Z0-9])*$/.test(code) || code.length != 4) {
+    		$("#errorText").text("请输入正确的验证码");
+    		$("#telIdentifyCode").val("");
+    		$("#telIdentifyCode").src="/shop/validatecode?t="+new Date();
+    		return false;
+        }
+    	$.ajax({
+    		url : '/shop/user/register.do',
+    		type : 'post',
+    		data : {"phone":phone,"pwd":pwd1,"code":code},
+    		success : function(data){
+    			switch(data){
+    			case '1':
+    				$('#register').css("display","none");
+					$('#show-success').css("display","block");
+					var start = 5;
+					var daojishi = setInterval(function(){
+					    document.getElementById('daojishi-time').innerHTML=start;
+					    start--;
+					    if(start < 0){
+					        clearInterval(daojishi);
+					        window.location.href = "/shop/common/toMy.do";
+					        return;
+					       }
+					    },1000);
+    				break;
+    			case '2':
+    				$("#registerError").text("验证码不正确");
+    				break;
+    			case '3':
+    				$("#registerError").text("该手机已注册");
+    				break;
+    			}
+    		}
+    	})
+    }
+</script>
+</html> 

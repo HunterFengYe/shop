@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="shop.dao.ArticleDao" >
+     <!-- 发布文章 -->
+     <insert id="publish" parameterType="Map">
+         insert into shop_article (ar_body,ar_class,ar_image,create_user,create_time)
+         values(#{essay},#{classId},#{imgName},#{userId},#{date})
+     </insert>
+     <!-- 查询作者 -->
+     <select id="getArUser" parameterType="Integer">
+         select create_user from shop_article
+         where ar_id=#{arId}
+     </select>
+     <!-- 根据分类显示文章 -->
+     <select id="getArByClass" parameterType="Integer" resultType="Map">
+         select 
+         ar.* ,
+         u.user_name,
+         u.user_image
+         from shop_article ar
+         inner join shop_user u on ar.create_user=u.user_id
+         where ar.ar_class=#{classId}
+         order by ar.create_time desc
+     </select>
+     <!-- 根据ID获取文章 -->
+     <select id="getArById" parameterType="Integer" resultType="Map">
+         select 
+         ar.* ,
+         u.user_id,
+         u.user_name,
+         u.user_image
+         from shop_article ar
+         inner join shop_user u on ar.create_user=u.user_id
+         where ar.ar_id=#{arId}
+     </select>
+</mapper>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" type="text/css" href="/shop/css/class.css">
+<link rel="stylesheet" type="text/css" href="/shop/css/header.css">
+<title>Insert title here</title>
+</head>
+<body>
+    <header class="my-header">
+        <div class="icon-back" onclick="location.href=history.back();"></div>
+        <span>评论</span>
+    </header>
+    <div class="say">
+      <textarea  placeholder="说点什么。。。" to="" reply="" class="say-text"></textarea>
+      <div class="white">
+      <button class="green" onclick="submit();">评论</button>
+      <button class="green" onclick="cancle();">取消</button>
+      </div>
+    </div>
+    <ul class="c-list"></ul>
+    <span>评论列表</span>
+    <hr style="height:1px;border-width:0;background-color:gray;" />
+    <ul class="com"></ul>
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/js/common.js"></script>
+<script type="text/javascript">
+function change(i,j){
+	$(".say").css("display","block");
+	$(".say-text").attr("to",i);
+	$(".say-text").attr("reply",j);
+}
+function submit(){
+	var arId='${arId}';
+	var userId='${userId}';
+	var body=$(".say-text").val();
+	var to=$(".say-text").attr("to");
+	var reply=$(".say-text").attr("reply");
+	var html='';
+	$.ajax({
+		url : '/shop/comment/comment',
+		type : 'post',
+		data : {"arId":arId,"body":body,"to":to,"reply":reply},
+		dataType : 'json',
+		success : function(json){
+		    html='<li class="reply-li" onclick="change('+to+','+userId+')"><h class="name-style">'+json.fName+'</h>回复<h class="name-style">'+json.tName+'</h>:'+body+'</li>';
+			$("#reply"+to).append(html);
+		}
+	})
+	$(".say-text").val("");
+	$(".say").css("display","none");
+}
+function cancle(){
+	$(".say-text").val("");
+	$(".say").css("display","none");
+}
+$(document).ready(function(){
+	   var arId='${arId}';
+	   $.ajax({
+	    url : '/shop/ar/article',
+		   type : 'post',
+		   data : {'arId' : arId},
+		   dataType : 'json',
+		   success : function(json){
+			 if(json.length==1){
+				$(".com").append("<span>暂无评论</span>"); 
+			 }
+		     var html='';
+		     var i=json.length-1;
+			    var img=new Array();
+			    if(json[i].ar_image!=null){
+		            img=json[i].ar_image.split(',');
+		        }
+		        if(json[i].user_image == null){
+		            json[i].user_image='person.png';
+		        }
+				html+='<li class="c-li">'
+					+'<div class="c-head">'
+					+'<img src="/shop/image/user/'+json[i].user_image+'" alt="" class="user-avatar">'
+					+'<span class="use-name">'+json[i].user_name+'</span>'
+					+'<span class="time">'+jsonDateFormat(json[i].create_time)+'</span><span class="comm" onclick="change(0,0);">评论</span></div>'
+					+'<div class="c-title" >'+json[i].ar_body+'</div>'
+					+'<div class="c-photo">'
+					+'<ul class="clearfix">';
+					if(img!=null){
+					  for(var j=0;j<img.length;j++){
+					    html+='<li><img src="/shop/image/essay/'+img[j]+'" alt=""></li>';
+					  }
+					}
+					html+='</ul></div></li>'
+			$(".c-list").append(html);
+			for(var j = 0;j < json.length-1;j++){
+				if(json[j].user_image==null){
+					json[j].user_image='person.png';
+				}
+				var comment='';
+				var reply='';
+				if(json[j].com_to==0){
+					comment='<li class="c-li">'
+					       +'<div class="c-head">'
+					       +'<img src="/shop/image/user/'+json[j].user_image+'" alt="" class="user-avatar">'
+					       +'<span class="use-name">'+json[j].user_name+'</span>'
+					       +'<span class="time">'+jsonDateFormat(json[j].com_time)+'</span><span class="comm" onclick="change('+json[j].com_id+',0)">评论</span></div>'
+					       +'<div class="c-title" >'+json[j].com_body+'</div>'
+					       +'<ul class="reply" id="reply'+json[j].com_id+'"></ul></li>';
+					$(".com").append(comment);
+				}else if(json[j].com_reply==0){
+					reply='<li class="reply-li" onclick="change('+json[j].com_to+','+json[j].user_id+')"><h class="name-style">'+json[j].user_name+'</h>:'+json[j].com_body+'</li>';
+					$("#reply"+json[j].com_to).append(reply);
+				}else{
+					reply='<li class="reply-li" onclick="change('+json[j].com_to+','+json[j].user_id+')"><h class="name-style">'+json[j].user_name+'</h>回复<h class="name-style">'+json[j].reply_name+'</h>:'+json[j].com_body+'</li>';
+					$("#reply"+json[j].com_to).append(reply);
+				}
+			}
+		   },
+		   error : function(){
+			alert("系统错误，请稍后重试！");
+		}
+	 })
+	})
+</script>
+</html>

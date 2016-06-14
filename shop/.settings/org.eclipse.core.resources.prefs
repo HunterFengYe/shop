@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+encoding//src/main/java/shop/socket/HandShake.java=UTF-8
+encoding//src/main/java/shop/socket/MyWebSocketHandler.java=UTF-8
+encoding//src/main/java/shop/utils/StringUtils.java=ISO-8859-1
+encoding//src/main/java/shop/web/ValidateCodeServlet.java=UTF-8
+encoding//src/main/webapp/WEB-INF/html/common/menu.html=UTF-8
+encoding//src/main/webapp/css/index.css=UTF-8

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" type="text/css" href="/shop/css/class.css">
+<link rel="stylesheet" type="text/css" href="/shop/css/header.css">
+<title>Insert title here</title>
+</head>
+<body>
+    <header class="my-header">
+        <div class="icon-back" onclick="location.href=history.back();"></div>
+        <span>${className}</span>
+        <h style="float:right;margin:10px 10px 0 0;font-size:15px;" onclick="location.href='/shop/common/toPublish?classId='+${classId}">发表</h>
+    </header>
+    <ul class="c-list"></ul>
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/js/common.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+   var classId='${classId}';
+   $.ajax({
+    url : '/shop/ar/classes',
+	   type : 'post',
+	   data : {'classId' : classId},
+	   dataType : 'json',
+	   success : function(json){
+	     var html='';
+		for(var i = 0 ; i < json.length; i ++){
+		    var img=new Array();
+		    var href='/shop/common/toArticle?arId='+json[i].ar_id;
+		    if(json[i].ar_image!=null){
+	            img=json[i].ar_image.split(',');
+	        }
+	        if(json[i].user_image == null){
+	            json[i].user_image='person.png';
+	        }
+			html+='<li class="c-li">'
+				+'<div class="c-head">'
+				+'<img src="/shop/image/user/'+json[i].user_image+'" alt="" class="user-avatar">'
+				+'<span class="use-name">'+json[i].user_name+'</span>'
+				+'<span class="time">'+jsonDateFormat(json[i].create_time)+'</span><span class="addYes" id="ar_'+json[i].ar_id+'" onclick="add('+json[i].ar_id+');">赞'+json[i].yes+'</span></div>'
+				+'<div class="c-title" onclick="location.href=\''+href+'\'">'+json[i].ar_body+'</div>'
+				+'<div class="c-photo">'
+				+'<ul class="clearfix">';
+				if(img!=null){
+				  for(var j=0;j<img.length;j++){
+				    html+='<li><img src="/shop/image/essay/'+img[j]+'" alt=""></li>';
+				  }
+				}
+				html+='</ul></div></li>';
+		}
+		$(".c-list").append(html);
+	   },
+	   error : function(){
+		alert("系统错误，请稍后重试！");
+	}
+ })
+})
+</script>
+<script>
+function add(t){
+	$.post('/shop/ar/addYes',{'arId':t},function(rs){
+		if(rs=='-1'){
+			alert("error");
+		}else{
+			$('#ar_'+t).html("赞"+rs);
+		}
+	})
+}
+</script>
+</html>

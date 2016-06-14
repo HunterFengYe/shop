@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" type="text/css" href="/shop/css/message.css">
+<link rel="stylesheet" type="text/css" href="/shop/css/foot.css">
+<title>Insert title here</title>
+</head>
+<body>
+    <header class="my-header">
+        <span>消息</span>
+    </header>
+    <div class="tab">
+        <span class="nav_1" tar-id="box_1">回复我的</span>
+        <span class="nav_2" tar-id="box_2">聊天</span>
+    </div>
+    <div id="box_1" style="display:block">
+        <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+        <ul class="replyMe"></ul>
+    </div>
+    <div id="box_2" style="display:none">
+        <hr style="height:1px;border-width:0;background-color:#d0d6d3;" />
+        <ul class="fr_list">
+        </ul>
+    </div>
+#parse("../html/common/menu.html")
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+$(".tab span").on("click",function(){
+	if (!$(this).hasClass("nav_1")) {
+		$(this).removeClass("nav_2");
+		$(this).addClass("nav_1");
+		$(this).siblings().removeClass("nav_1");
+		$(this).siblings().addClass("nav_2");
+		document.getElementById($(this).attr("tar-id")).style.display="";
+		document.getElementById($(this).siblings().attr("tar-id")).style.display="none";
+	}
+})
+    function chat(i){
+    	location.href='/shop/common/talk?to='+i;
+    }
+    function toReply(i){
+    	location.href='/shop/common/toArticle?arId='+i;
+    }
+</script>
+<script>
+var userId='${userId}';
+$(document).ready(function(){
+	$.ajax({
+		url : '/shop/user/frList',
+		type : 'post',
+		data : {'userId' : userId},
+		dataType :'json',
+		success : function(data){
+			var html ='';
+			for(var i = 0;i < data.length;i++){
+				if(data[i].user_image==null){
+					data[i].user_image='person.png';
+				}
+				html+='<li onclick="chat('+data[i].user_id+')"><img src="/shop/image/user/'+data[i].user_image+'">'
+				     +'<span>'+data[i].user_name+'</span></li><hr style="height:1px;border-width:0;background-color:#d0d6d3;" />';
+			}
+			$(".fr_list").append(html);
+		},
+		error : function(){
+			$(".fr_list").append("没有好友");
+		}
+	});
+	$.ajax({
+		url : '/shop/comment/aboutMe',
+		type : 'post',
+		dataType : 'json',
+		success : function(json){
+			var html='';
+			for(var i = 0;i < json.length;i++){
+				if(json[i].user_image==null){
+					json[i].user_image='person.png';
+				}
+				html+='<li onclick="toReply('+json[i].com_ar+')"><img  style="width:50px;height:50px;border-radius:55px;" src="/shop/image/user/'+json[i].user_image+'">'
+			     +'<span>'+json[i].user_name+'</span><div style="margin:2px 10px 2px 10px;border:1px solid #d0d6d3">回复我：'+json[i].com_body+'</div></li><hr style="height:1px;border-width:0;background-color:#d0d6d3;" />';
+			}
+			$(".replyMe").append(html);
+		},
+		error : function(){
+			$(".replyMe").append("没有回复");
+		}
+	})
+})
+</script>
+</html>

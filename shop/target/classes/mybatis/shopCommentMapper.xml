@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="shop.dao.CommentDao" >
+  <select id="getCom" parameterType="Integer" resultType="Map">
+      select 
+      com.*,
+      u.user_id,
+      u.user_name,
+      u.user_image,
+      us.user_name as "reply_name"
+      from shop_comment com 
+      inner join shop_user u on u.user_id=com.com_user
+      inner join shop_user us on us.user_id=com.com_reply
+      where com.com_ar=#{arId} 
+      order by com.com_time
+  </select>
+  <insert id="addCom" parameterType="Map">
+      insert into shop_comment(com_body,com_user,com_ar,com_time,com_to,com_reply)
+      values(#{body},#{userId},#{arId},#{date},#{to},#{reply})
+      
+  </insert>
+  <!-- 与我相关 -->
+  <select id="aboutMe" parameterType="Integer" resultType="Map">
+      select 
+      com.*,
+      u.user_id,
+      u.user_name,
+      u.user_image
+      from shop_comment com 
+      inner join shop_user u on u.user_id=com.com_user
+      where com_reply=#{userId}
+      order by com.com_time desc
+  </select>
+  <select id="getReply">
+     select 
+     com.*,
+     u.user_name
+     from shop_comment com
+     inner join shop_user u on u.user_id=com.com_user
+  </select>
+</mapper>

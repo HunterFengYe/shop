@@ -1,0 +1,10 @@
+.menu { background:#59a40f; border-top:1px solid #dcdcdc; text-align:center; position:fixed; bottom:0; width:100%;height:58px; padding:0.2em 0}
+.menu a{ float:left; width:33%; color:#b7b7b7; font-size:0.9em}
+.menu a i{ width:2.5em; height:2.5em; display:block; margin:0.2em auto;}
+.menu a .ico1{background:url(../image/index.jpg) no-repeat; background-size:2.5em 2.5em}
+.menu a .ico2{background:url(../image/chat.jpg) no-repeat; background-size:2.5em 2.5em}
+.menu a .ico3{background:url(../image/my.jpg) no-repeat; background-size:2.5em 2.5em}
+.menu a[class="curr"]{color:#489ef1}
+.menu a[class="curr"] .ico1{ background-position:bottom; background-size:2.5em 2.5em}
+.menu a[class="curr"] .ico2{ background-position:bottom; background-size:2.5em 2.5em}
+.menu a[class="curr"] .ico3{ background-position:bottom; background-size:2.5em 2.5em}

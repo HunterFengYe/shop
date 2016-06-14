@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>用户发表--享知资讯网</title>
+	<link rel="stylesheet" href="/shop/css/publish.css">
+	<meta name="viewport" id="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+	<header class="header-box fixed" id="header">
+        <span class="header-back" onclick="javascript:history.go(-1);">
+            <i class="icon-title-back effect-active"></i>
+        </span>
+        <input type="submit" class="submit" value="发表" form="publish">
+        <h1>我要发表</h1>
+    </header>
+	<div class="publish-content">
+		<form action="/shop/ar/publish" method="post" enctype="multipart/form-data" id="publish" name="publish">
+			<textarea name="p-area" id="p-area" cols="30" rows="10" value=""></textarea>
+			<input name="classId" type="hidden" value="${classId}">
+			<ul class="photo-list">
+				
+			</ul>
+			<a href="" class="select-wrap">
+				选择图片
+				<input type="file" id="select-photo" name="select-photo" multiple>
+			</a>
+		</form>
+	</div>
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/shop/js/publish.js"></script>
+</html>

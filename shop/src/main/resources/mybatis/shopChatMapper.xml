@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="shop.dao.ChatDao" >
+    <!-- 聊天 -->
+    <insert id="insert" parameterType="Map">
+       insert into shop_chat
+       (chat_body,chat_from,chat_to,chat_time)
+       values(#{data},#{from},#{to},#{date})
+    </insert>
+    <!-- 聊天记录 -->
+    <select id="chatInfo" resultType="Map">
+        SELECT * FROM shop_chat
+        WHERE (chat_from=#{from} AND chat_to=#{to}) OR (chat_from=#{to} AND chat_to=#{from})
+        order by chat_time
+    </select>
+</mapper>

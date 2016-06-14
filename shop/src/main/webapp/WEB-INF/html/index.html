@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="zh-CN" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" type="text/css" href="/shop/css/index.css">
+<link rel="stylesheet" type="text/css" href="/shop/css/foot.css">
+<title>校园环保论坛</title>
+</head>
+<body>
+    <header id="search-header" class="search-header">
+		<div class="search-bar">
+			<div class="change">
+				<h2>校公益</h2>
+			</div>
+			<div class="center">
+				<input type="text" placeholder="公益项目" id="xz-search">
+				<span class="icon-delete"></span>
+				<span class="search-button icon-search-big"></span>
+			</div>
+		</div>
+	</header>
+	<div class="spara"></div>
+    <section class="i-swipe-banner" id="J_banner-slider">
+        <ul class="box">
+            <li>
+            	<a href="" >
+                    <img src="/shop/image/111.jpg" />
+                </a>
+            </li>
+            <li>
+            	<a href="" >
+                    <img src="/shop/image/222.jpg" />
+                </a>
+            </li>
+            <li>
+            	<a href="" >
+                 <img  src="/shop/image/333.jpg" />
+            	</a>
+           	</li>
+        </ul>
+        <div class="swipe-pagenavi" id="J_banner-pagenavi">
+            <a class='active' href="javascript:void(0);"></a>
+            <a  href="javascript:void(1);"></a>
+            <a  href="javascript:void(2);"></a>
+        </div>
+    </section>
+    <div class="spara"></div>
+    <div class="classes">
+        <ul>
+            <li class="icon" value="1"><img src="/shop/image/111.jpg"><span>废品回收</span></li>
+            <li class="icon" value="2"><img src="/shop/image/111.jpg"><span>爱心义卖</span></li>
+            <li class="icon" value="3"><img src="/shop/image/111.jpg"><span>环保校园</span></li>
+            <li class="icon" value="4"><img src="/shop/image/111.jpg"><span>二手交易</span></li>
+            <li class="icon" value="5"><img src="/shop/image/111.jpg"><span>心理咨询</span></li>
+            <li class="icon" value="6"><img src="/shop/image/111.jpg"><span>简历诊断</span></li>
+            <li class="icon" value="7"><img src="/shop/image/111.jpg"><span>其他</span></li>
+            <li class="icon" value="8"><img src="/shop/image/111.jpg"><span>其他1</span></li>
+        </ul>
+    </div>
+    <div class="spara"></div>
+    <div class="article">
+       <div class="article-head">
+           <span>网站推荐</span>
+           
+           <a onclick="change();">换一批</a>
+           <img alt="" src="/shop/image/reflesh.jpg" style="width:15px;height:15px;float:right;margin-right:10px;">
+       </div>
+       <div class="article-body">
+           <div class="">111</div>
+           <hr style="height:1px;border-width:0;background-color:gray;" />
+       </div>
+       <div class="article-end">查看更多推荐 ></div>
+    </div>
+    #parse("../html/common/menu.html")
+</body>
+<script type="text/javascript" src="/shop/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+ function rollTwo(){
+    $(".box").animate({marginLeft:"0px"},5000,"linear",function(){
+      $(".box").css({marginLeft:"0px"});
+      $(".box li:first").remove().clone(true).appendTo(".box");	
+    })	
+  }
+  var startRollTwo=setInterval(rollTwo,2000);
+  <!--鼠标移入停止移出继续-->
+  $(".box").hover(function(){
+    clearInterval(startRollTwo);	
+  },function(){
+    startRollTwo=setInterval(rollTwo,2000);	
+  });
+ function change(){
+	 $.ajax({
+		 url : '',
+		 type : 'post',
+		 data : {},
+		 success : function(){
+			 
+		 }
+	 })
+ };
+ $(".icon").on("click",function(){
+	  var classId=$(this).val();
+	  location.href='/shop/common/toClass?classId='+classId;
+ })
+</script>
+</html>
